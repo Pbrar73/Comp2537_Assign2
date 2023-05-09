@@ -52,12 +52,13 @@ app.use(session({
 ));
 
 function adminAuthenticate(req,res,next){
+    let error = ' ';
     if(req.session.authenticated){
         if(req.session.user_type == "admin"){
             next();
         }else{
             res.status(403);
-            res.render('errorMess', {mess: "You are not authorized to view this page."});
+            res.render('errorMessage', { error });
         }
     } else {
         res.redirect("/login");
@@ -73,7 +74,7 @@ function sessionAuthenticate(req,res,next){
 }
 
 app.get('/', (req, res) => {
-    res.render("index", { session: req.session });
+    res.render("index", { session: req.session, req: req });
 });
 
 app.get('/nosql-injection', async (req, res) => {
@@ -156,29 +157,37 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/submitUser', async (req, res) => {
-    var username = req.body.username;
+    var name = req.body.name;
+    var email = req.body.email;
     var password = req.body.password;
+	var usertype = 'user';
 
-    const schema = Joi.object(
-        {
-            username: Joi.string().alphanum().max(20).required(),
-            password: Joi.string().max(20).required()
-        });
+    const schema = Joi.object({
+        name: Joi.string().min(1).max(20).required(),
+        email: Joi.string().email().required(),
+        password: Joi.string().max(20).required(),
+    });
 
-    const validationResult = schema.validate({ username, password });
+    const validationResult = schema.validate({ name, email, password });
     if (validationResult.error != null) {
         console.log(validationResult.error);
-        res.redirect("/createUser");
+        res.render('signupError', { errorMessage: validationResult.error.details[0].message });
         return;
     }
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    await userCollection.insertOne({ username: username, password: hashedPassword });
-    console.log("Inserted user");
+    await userCollection.insertOne({ name: name, email: email, user_type: usertype, password: hashedPassword });
+    console.log('Inserted user');
 
-    var html = "successfully created user";
-    res.render("submitUser", { html: html });
+    req.session.authenticated = true;
+    req.session.email = email;
+    req.session.name = name;
+    req.session.password = hashedPassword;
+	req.session.user_type = usertype;
+    req.session.cookie.maxAge = expireTime;
+
+    res.redirect('/members');
 });
 
 app.post('/loggingin', async (req, res) => {
