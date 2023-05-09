@@ -1,0 +1,14 @@
+<%- include("templates/header") %>
+    <body>
+        <div style="margin-left: 10%;">
+            email address:
+            <form action='/submitEmail' method='post'>
+                <input name='email' type='text' placeholder='email'>
+                <button>Submit</button>
+            </form>
+            <% if (missing) { %>
+                <br> email is required
+                <% } %>
+        </div>
+    </body>
+<%- include("templates/footer") %>

@@ -1,0 +1,13 @@
+<%- include("templates/header") %> 
+<h1>Members</h1>
+<h2>Hello <%= username %>!</h2>
+<div class="row mb-3 text-center">
+    <div class="col-md-4 themed-grid-col"><img src='gorilla1.jpg' class="img-fluid"></div>
+    <div class="col-md-4 themed-grid-col"><img src='gorilla2.jpg' class="img-fluid"></div>
+    <div class="col-md-4 themed-grid-col"><img src='gorilla3.jpg' class="img-fluid"></div>
+  </div>
+<br />
+<form action='/logout' method='post'>
+    <button class="btn btn-secondary rounded-pill px-3">Logout</button><br />
+</form>
+<%- include("templates/footer") %>

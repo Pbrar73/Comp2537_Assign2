@@ -1,0 +1,5 @@
+<li> <%= user.name %> (<%= user.user_type %>) 
+    <a class="btn btn-sm btn-success" href=
+    "/admin/promote/<%= user._id %>" role="button">Promote to Admin</a>
+    <a class="btn btn-sm btn-danger" href=
+    "/admin/demote/<%= user._id %>" role="button">Demote to User</a></li><br>

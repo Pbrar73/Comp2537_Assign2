@@ -1,0 +1,15 @@
+<%- include("templates/header") %> 
+    <% if (session.authenticated) { %>
+<div class="container">
+    <h2>Hello, <%= req.session.name %>!</h2>
+    <form action='/members' method='get'><button>Go to Members Area</button></form>
+    <form action='/signout' method='get'><button>Log Out</button></form>
+</div>
+    <% } else { %>
+<div class="container">
+    <form action='/createuser' method='get'><button>Sign Up</button><br></form>
+    <form action='/login' method='get'><button>Log in</button></form>
+</div>
+
+    <% } %>
+<%- include("templates/footer") %>
